@@ -47,8 +47,23 @@ export default function FinanceContextProvider({ children }) {
             throw e;
         }
     };
+    const addExpenseItem = async (newExpense) => {
+        const collectionRef = collection(db, 'expenses', expenseCategoryId);
+        try {
+            const docSnap = await addDoc(collectionRef, newExpense);
+            // updating state
+            setExpenses((prevExpenses) => {
+                return [...prevExpenses, {
+                    id: docSnap.id,
+                    ...newExpense
+                }]
+            });
+        } catch (e) {
+            console.error('Error adding document: ', e);
+            throw e;
+        }
+    }
 
-    const values = { income, expenses, addIncomeItem, removeIncomeItem};
     useEffect(() => {
         // Fetch Income
         const getIncomeData = async () => {
@@ -63,7 +78,7 @@ export default function FinanceContextProvider({ children }) {
             });
             setIncome(data);
         };
-
+        
         const getExpenseData = async () => {
             const collectionRef = collection(db, 'expenses')
             const docSnap = await getDocs(collectionRef);
@@ -75,11 +90,12 @@ export default function FinanceContextProvider({ children }) {
             });
             setExpenses(data);
         }
-
+        
         getIncomeData();
         getExpenseData();
     }, []);
-
+    
+    const values = { income, expenses, addIncomeItem, removeIncomeItem};
     return <FinanceContext.Provider value={values}>
         {children}
     </FinanceContext.Provider>
