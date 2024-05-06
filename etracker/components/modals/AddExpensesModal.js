@@ -88,7 +88,7 @@ function AddExpensesModal({ show, onClose }) {
                 <button onClick={() => { setSelectedCategory(expense.id); }} style={{
                   boxShadow: expense.id === selectedCategory ? '1px 1px 4px' : 'none'
                 }}>
-                  <ExpenseCategoryItem key={expense.id} color={expense.color} title={expense.title} amount={expense.amount} />
+                  <ExpenseCategoryItem key={expense.id} expense={expense} />
                 </button>
               )}
             </div>

@@ -22,6 +22,7 @@ export default function Home() {
       return total + e.amount;
     }, 0);
 
+
     setBalance(newBalance);
   }, [expenses, income]);
   return (
@@ -46,7 +47,7 @@ export default function Home() {
             <h3 className='text-2xl px-6'>Nathan's Expenses</h3>
             <div className='flex flex-col gap-2 mt-6 max-w-fit'>
               {expenses.map((expense) =>
-                <ExpenseCategoryItem key={expense.id} color={expense.color} title={expense.title} amount={expense.amount}/>
+                <ExpenseCategoryItem key={expense.id} expense={expense}/>
               )}
             </div>
           </section>
@@ -54,7 +55,7 @@ export default function Home() {
             <h3 className='text-2xl px-6'>Nathan's Incomes</h3>
             <div className='flex flex-col gap-2 mt-6'>
               {expenses.map((expense) =>
-                <ExpenseCategoryItem key={expense.id} color={expense.color} title={expense.title} amount={expense.amount}/>
+                <ExpenseCategoryItem key={expense.id} expense={expense}/>
               )}
             </div>
           </section>
