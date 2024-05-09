@@ -10,7 +10,7 @@ function AddExpensesModal({ show, onClose }) {
   const [expenseDescription, setExpenseDescription] = useState("");
   const [selectedCategory, setSelectedCategory] = useState(null);
 
-  const { expenses, 
+  const { expenses,
     // addIncomeItem, removeIncomeItem 
   } = useContext(FinanceContext);
 
@@ -25,12 +25,12 @@ function AddExpensesModal({ show, onClose }) {
       total: +expense.total + +expenseAmount,
       title: expense.title,
       items: [...expense.items, {
-              description: expenseDescription,
-              amount: +expenseAmount,
-              createdOn: new Date(),
-              id: uuidv4()
-            }
-          ]
+        description: expenseDescription,
+        amount: +expenseAmount,
+        createdOn: new Date(),
+        id: uuidv4()
+      }
+      ]
     };
 
     console.log(newExpense);
@@ -62,14 +62,14 @@ function AddExpensesModal({ show, onClose }) {
         <form className='flex flex-col gap-4 px-6'>
           <div className='input-group'>
             <label htmlFor="description" className='mr-2 text-l'>Expense Description:</label>
-            <input className="px-4 py-2 bg-slate-500 rounded-xl text-l" type="text" 
-            placeholder="Enter Expense Description" value={expenseDescription} 
-            onChange={
-              (e) => {
-                setExpenseDescription(e.target.value);
+            <input className="px-4 py-2 bg-slate-500 rounded-xl text-l" type="text"
+              placeholder="Enter Expense Description" value={expenseDescription}
+              onChange={
+                (e) => {
+                  setExpenseDescription(e.target.value);
+                }
               }
-            }
-            required />
+              required />
           </div>
           <div className='input-group'>
             <label htmlFor="amount" className='mr-2 text-l'>Expense Amount:</label>
@@ -88,7 +88,6 @@ function AddExpensesModal({ show, onClose }) {
                 <button onClick={() => { setSelectedCategory(expense.id); }} style={{
                   boxShadow: expense.id === selectedCategory ? '1px 1px 4px' : 'none'
                 }}>
-                  <ExpenseCategoryItem key={expense.id} expense={expense} />
                 </button>
               )}
             </div>
@@ -99,12 +98,7 @@ function AddExpensesModal({ show, onClose }) {
             <button onClick={addExpenseHandler} type="submit" className="btn btn-add items-center m-5">Add Expense</button>
           )}
         </form>
-
-
-
-
       </Modal>
-
     )
   )
 }

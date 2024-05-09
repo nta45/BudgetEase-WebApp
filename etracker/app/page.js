@@ -5,9 +5,10 @@ import { useState, useContext, useEffect} from 'react';
 import AddIncomeModal from '@/components/modals/AddIncomeModal';
 import AddExpensesModal from '@/components/modals/AddExpensesModal';
 import { FinanceContext } from '@/lib/store/finance-context';
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
-
+  const router = useRouter();
   const [showAddIncomeModal, setAddIncomeModal] = useState(false);
   const [showAddExpensesModal, setAddExpensesModal] = useState(false);
 
@@ -27,17 +28,16 @@ export default function Home() {
   }, [expenses, income]);
   return (
     <>
-       <AddIncomeModal show={showAddIncomeModal} onClose={setAddIncomeModal}/>
-       <AddExpensesModal show={showAddExpensesModal} onClose={setAddExpensesModal}/>
-
+      {showAddIncomeModal && <AddIncomeModal show={showAddIncomeModal} onClose={setAddIncomeModal}></AddIncomeModal>}
+      {showAddExpensesModal && <AddExpensesModal show={showAddExpensesModal} onClose={setAddExpensesModal}></AddExpensesModal>}
       <main className='my-2 py-2 container mx-auto flex flex-col'>
         <section className='flex flex-col gap-2 py-5 items-center'>
           <small className='text-3xl'> Current Balance</small>
           <h2 className='text-5xl'>{currencyFormatter(balance)}</h2>
         
           <section className='flex items-center gap-5 mt-4'>
-            <button onClick={()=>{setAddExpensesModal({val:true, name:'Add New Expense'});}} className="btn btn-add">+ Add Expense</button>
-            <button onClick={()=>{setAddIncomeModal({val:true, name:'Add New Income'});}} className="btn btn-add">+ Add Income</button>
+            <button onClick={()=>{setAddExpensesModal(true);}} className="btn btn-add">+ Add Expense</button>
+            <button onClick={()=>{setAddIncomeModal(true);}} className="btn btn-add">+ Add Income</button>
           </section>
         </section>
         <hr className='w-full border-1 border-slate-500 my-6'/>

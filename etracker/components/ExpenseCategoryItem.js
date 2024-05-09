@@ -3,12 +3,11 @@ import ViewIEModal from './modals/ViewIEModal';
 import { useState } from 'react';
 
 function ExpenseCategoryItem({expense}) {
-    const [viewModal, setViewModal] = useState(true);
+    const [viewModal, setViewModal] = useState(false);
 
     return (
-        <>
-        <ViewIEModal show={viewModal} onClose={setViewModal} expense={expense}/>
-        <button onClick={()=>{setViewModal({val:true, name:`Expense Detail: ${expense.title}`})}}>
+        <>{viewModal && <ViewIEModal show={viewModal} onClose={setViewModal} expense={expense}/>}
+        <button onClick={()=>{setViewModal(true)}}>
             <div className='flex items-center justify-between px-4 py-4 bg-slate-500 rounded-full'>
                 <div className='flex items-center gap-2'>
                 <div className='w-[2em] h-[2em] rounded-full' style={{backgroundColor:expense.color}}/>
