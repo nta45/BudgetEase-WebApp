@@ -20,7 +20,7 @@ function AddExpenseWindow({ show, onClose }) {
       amount: +amountRef.current.value,
       description: descriptionRef.current.value,
       createdOn: new Date(),
-      user: user.uid
+      uid: user.uid
     }
     try {
       await addExpenseItem(newExpense);
