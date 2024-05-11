@@ -54,7 +54,7 @@ const SignIn = () => {
 
                 <h1> Documentation </h1>
 
-                <button onClick={() => window.location = 'https://github.com/nta45/ExpenseTracker'} className='flex items-center px-4 py-4 bg-slate-500 rounded-full'>Source Code</button>
+                <button onClick={() => window.location = 'https://github.com/nta45/BudgetEase-WebApp'} className='flex items-center px-4 py-4 bg-slate-500 rounded-full'>Source Code</button>
 
               </Window>)}
             </div>
