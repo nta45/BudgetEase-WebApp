@@ -1,10 +1,11 @@
 'use client';
-import { createContext, useState, useEffect } from 'react';
+import { createContext, useState, useEffect, useContext } from 'react';
+import { authContext } from './auth-context';
 // Firebase
 import { db } from '@/lib/firebase';
-import { collection, addDoc, getDocs, doc, deleteDoc } from 'firebase/firestore';
+import { collection, addDoc, getDocs, doc, deleteDoc, query, where } from 'firebase/firestore';
 
-export const FinanceContext = createContext({
+export const BudgetContext = createContext({
     expenses: [],
     incomes: [],
     addExpense: async () => { },
@@ -14,9 +15,10 @@ export const FinanceContext = createContext({
 });
 
 
-export default function FinanceContextProvider({ children }) {
+export default function BudgetContextProvider({ children }) {
     const [income, setIncome] = useState([]);
-    const [expenses, setExpenses] = useState([]);
+    const [expense, setExpense] = useState([]);
+    const { user } = useContext(authContext);
 
     const addIncomeItem = async (newIncome) => {
         const collectionRef = collection(db, 'income');
@@ -25,6 +27,7 @@ export default function FinanceContextProvider({ children }) {
             // updating state
             setIncome((prevIncome) => {
                 return [...prevIncome, {
+                    uid: user.uid,
                     id: docSnap.id,
                     ...newIncome
                 }]
@@ -48,12 +51,13 @@ export default function FinanceContextProvider({ children }) {
         }
     };
     const addExpenseItem = async (newExpense) => {
-        const collectionRef = collection(db, 'expenses', expenseCategoryId);
+        const collectionRef = collection(db, 'expense');
         try {
             const docSnap = await addDoc(collectionRef, newExpense);
             // updating state
-            setExpenses((prevExpenses) => {
+            setExpense((prevExpenses) => {
                 return [...prevExpenses, {
+                    uid: user.uid,
                     id: docSnap.id,
                     ...newExpense
                 }]
@@ -64,11 +68,28 @@ export default function FinanceContextProvider({ children }) {
         }
     }
 
+    const removeExpenseItem = async (expenseId) => {
+        const docRef = doc(db, 'expense', expenseId);
+        try {
+            await deleteDoc(docRef);
+            setExpense((prevIncome) => {
+                return prevIncome.filter((expense) => expense.id !== expenseId)
+            });
+
+        } catch (e) {
+            console.error('Error deleting document: ', e);
+            throw e;
+        }
+    };
+
     useEffect(() => {
+        if (!user) return;
         // Fetch Income
         const getIncomeData = async () => {
             const collectionRef = collection(db, 'income')
-            const docSnap = await getDocs(collectionRef);
+            const q = query(collectionRef, where('uid', '==', user.uid));
+            const docSnap = await getDocs(q);
+
             const data = docSnap.docs.map((doc) => {
                 return {
                     id: doc.id,
@@ -78,25 +99,28 @@ export default function FinanceContextProvider({ children }) {
             });
             setIncome(data);
         };
-        
+
         const getExpenseData = async () => {
-            const collectionRef = collection(db, 'expenses')
-            const docSnap = await getDocs(collectionRef);
+            const collectionRef = collection(db, 'expense')
+            const q = query(collectionRef, where('uid', '==', user.uid));
+            const docSnap = await getDocs(q);
+
             const data = docSnap.docs.map((doc) => {
                 return {
                     id: doc.id,
                     ...doc.data(),
+                    createdOn: new Date(doc.data().createdOn.toMillis())
                 }
             });
-            setExpenses(data);
+            setExpense(data);
         }
-        
+
         getIncomeData();
         getExpenseData();
-    }, []);
-    
-    const values = { income, expenses, addIncomeItem, removeIncomeItem};
-    return <FinanceContext.Provider value={values}>
+    }, [user]);
+
+    const values = { income, expense, addIncomeItem, removeIncomeItem, addExpenseItem, removeExpenseItem };
+    return <BudgetContext.Provider value={values}>
         {children}
-    </FinanceContext.Provider>
+    </BudgetContext.Provider>
 }

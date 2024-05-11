@@ -2,30 +2,30 @@
 @tailwind components;
 @tailwind utilities;
 
-
 @layer base {
   body {
-    font-family: 'Google Sans', sans-serif;
+    font-family: "Google Sans", sans-serif;
     @apply bg-slate-400 text-white relative;
   }
-  button{
+  button {
     @apply transition-all duration-100 hover:scale-110;
   }
 }
-  
 
 @layer utilities {
-  h1{
+  h1 {
     @apply text-emerald-100;
   }
 
   .btn-add {
     @apply bg-emerald-100 text-black;
   }
-  button{
+  button {
     @apply px-4 py-2 rounded-md font-bold;
   }
-  img, h1, button {
+  img,
+  h1,
+  button {
     @apply hover:scale-105;
     @apply transition-transform;
   }

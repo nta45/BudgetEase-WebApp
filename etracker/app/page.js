@@ -1,61 +1,69 @@
 'use client';
-import {currencyFormatter} from '@/lib/utils'
+import { currencyFormatter } from '@/lib/utils'
 import ExpenseCategoryItem from '@/components/ExpenseCategoryItem';
-import { useState, useContext, useEffect} from 'react';
-import AddIncomeModal from '@/components/modals/AddIncomeModal';
-import AddExpensesModal from '@/components/modals/AddExpensesModal';
-import { FinanceContext } from '@/lib/store/finance-context';
-import { useRouter } from 'next/navigation';
+import IncomeCategoryItem from '@/components/IncomeCategoryItem';
+import { useState, useContext, useEffect } from 'react';
+import AddIncomeWindow from '@/components/Windows/AddIncomeWindow';
+import AddExpenseWindow from '@/components/Windows/AddExpenseWindow';
+import { BudgetContext } from '@/lib/store/budget-context';
+import { authContext } from '@/lib/store/auth-context';
+import SignIn from '@/components/SignIn';
 
 export default function Home() {
-  const router = useRouter();
-  const [showAddIncomeModal, setAddIncomeModal] = useState(false);
-  const [showAddExpensesModal, setAddExpensesModal] = useState(false);
+  const [showAddIncomeWindow, setAddIncomeWindow] = useState(false);
+  const [showAddExpenseWindow, setAddExpenseWindow] = useState(false);
+  const { user, loading } = useContext(authContext);
 
   const [balance, setBalance] = useState(0);
-  const {expenses, income} = useContext(FinanceContext);
+  const { expense, income } = useContext(BudgetContext);
 
   useEffect(() => {
     const newBalance = income.reduce((total, i) => {
       return total + i.amount;
-    }, 0) - 
-    expenses.reduce((total, e) => {
-      return total + e.amount;
-    }, 0);
+    }, 0) -
+      expense.reduce((total, e) => {
+        return total + e.amount;
+      }, 0);
 
 
     setBalance(newBalance);
-  }, [expenses, income]);
+  }, [expense, income]);
+
+  if (!user || loading) {
+    return <SignIn />
+  }
+
+  const fname = user.displayName.split(' ')[0];
+
   return (
     <>
-      {showAddIncomeModal && <AddIncomeModal show={showAddIncomeModal} onClose={setAddIncomeModal}></AddIncomeModal>}
-      {showAddExpensesModal && <AddExpensesModal show={showAddExpensesModal} onClose={setAddExpensesModal}></AddExpensesModal>}
+      {showAddIncomeWindow && <AddIncomeWindow show={showAddIncomeWindow} onClose={setAddIncomeWindow}></AddIncomeWindow>}
+      {showAddExpenseWindow && <AddExpenseWindow show={showAddExpenseWindow} onClose={setAddExpenseWindow}></AddExpenseWindow>}
       <main className='my-2 py-2 container mx-auto flex flex-col'>
         <section className='flex flex-col gap-2 py-5 items-center'>
           <small className='text-3xl'> Current Balance</small>
           <h2 className='text-5xl'>{currencyFormatter(balance)}</h2>
-        
           <section className='flex items-center gap-5 mt-4'>
-            <button onClick={()=>{setAddExpensesModal(true);}} className="btn btn-add">+ Add Expense</button>
-            <button onClick={()=>{setAddIncomeModal(true);}} className="btn btn-add">+ Add Income</button>
+            <button onClick={() => { setAddExpenseWindow(true); }} className="btn btn-add">+ Add Expense</button>
+            <button onClick={() => { setAddIncomeWindow(true); }} className="btn btn-add">+ Add Income</button>
           </section>
         </section>
-        <hr className='w-full border-1 border-slate-500 my-6'/>
-        
-        <section className='flex items-center mx-auto gap-5'>{/* Lists Container */}
+        <hr className='w-full border-1 border-slate-500 my-6' />
+
+        <section className='flex  items-center mx-auto sm=flex-col'>{/* Lists Container */}
           <section className='py-2'>{/* Expenses List*/}
-            <h3 className='text-2xl px-6'>Nathan's Expenses</h3>
-            <div className='flex flex-col gap-2 mt-6 max-w-fit'>
-              {expenses.map((expense) =>
-                <ExpenseCategoryItem key={expense.id} expense={expense}/>
+            <h3 className='text-2xl px-6'>{fname}'s Expenses</h3>
+            <div className='flex flex-col gap-2 mt-6'>
+              {expense.map((expense) =>
+                <ExpenseCategoryItem key={expense.id} expense={expense} />
               )}
             </div>
           </section>
           <section className='py-2'>{/* Incomes List*/}
-            <h3 className='text-2xl px-6'>Nathan's Incomes</h3>
+            <h3 className='text-2xl px-6'>{fname}'s Incomes</h3>
             <div className='flex flex-col gap-2 mt-6'>
-              {expenses.map((expense) =>
-                <ExpenseCategoryItem key={expense.id} expense={expense}/>
+              {income.map((income) =>
+                <IncomeCategoryItem key={income.id} income={income} />
               )}
             </div>
           </section>

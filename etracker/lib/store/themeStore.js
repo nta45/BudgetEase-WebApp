@@ -1,8 +1,8 @@
 
-import {create} from 'zustand'
+import { create } from 'zustand'
 
 const useThemeStore = create((set) => ({
-    theme: true,
+    theme: false,
     setTheme: (theme) => set({ theme }),
     changeTheme: () => set((state) => ({ theme: !state.theme })),
 }))

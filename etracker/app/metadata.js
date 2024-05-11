@@ -1,5 +1,4 @@
 export const metadata = {
-    title: "Expense Tracker",
-    description: "A simple expense tracker app",
-  };
-  
+  title: "BudgetEase",
+  description: "A simple expense tracker app",
+};
