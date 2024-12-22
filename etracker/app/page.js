@@ -7,7 +7,7 @@ import AddIncomeWindow from '@/components/Windows/AddIncomeWindow';
 import AddExpenseWindow from '@/components/Windows/AddExpenseWindow';
 import { BudgetContext } from '@/lib/store/budget-context';
 import { authContext } from '@/lib/store/auth-context';
-import SignIn from '@/components/SignIn';
+import SignIn from '@/components/signIn';
 
 export default function Home() {
   const [showAddIncomeWindow, setAddIncomeWindow] = useState(false);
